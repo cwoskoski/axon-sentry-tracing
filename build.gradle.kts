@@ -76,15 +76,11 @@ subprojects {
     }
 }
 
-// Root project tasks
-tasks.register("clean") {
-    dependsOn(subprojects.map { it.tasks.named("clean") })
+// Root project tasks - delegate to subprojects
+tasks.register("clean", Delete::class) {
+    group = "build"
+    description = "Deletes the build directory"
+    delete(layout.buildDirectory)
 }
 
-tasks.register("build") {
-    dependsOn(subprojects.map { it.tasks.named("build") })
-}
-
-tasks.register("test") {
-    dependsOn(subprojects.map { it.tasks.named("test") })
-}
+// These tasks are implicitly created by Gradle and properly delegated to subprojects

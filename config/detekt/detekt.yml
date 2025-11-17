@@ -1,0 +1,58 @@
+build:
+  maxIssues: 0
+
+console-reports:
+  active: true
+
+output-reports:
+  active: true
+
+comments:
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+
+complexity:
+  LongMethod:
+    threshold: 60
+  LongParameterList:
+    functionThreshold: 6
+  TooManyFunctions:
+    thresholdInFiles: 20
+
+# Formatting is now handled by ktlint instead
+# formatting:
+#   active: true
+#   android: false
+#   autoCorrect: true
+
+naming:
+  FunctionNaming:
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    excludeClassPattern: '$^'
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_A-Z0-9]*'
+    propertyPattern: '[a-z][a-zA-Z0-9]*'
+    privatePropertyPattern: '_?[a-z][a-zA-Z0-9]*'
+
+performance:
+  active: true
+
+potential-bugs:
+  active: true
+
+style:
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2']
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: true
+    ignoreAnnotation: true
+  MaxLineLength:
+    maxLineLength: 120
+    excludeCommentStatements: true

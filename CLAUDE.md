@@ -4,252 +4,162 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This repository contains **axon-sentry-tracing**, a Kotlin library that integrates Sentry tracing and error monitoring with Axon Framework via OpenTelemetry. The library provides distributed tracing for event-sourced, CQRS applications with minimal configuration.
+**axon-sentry-tracing** is a Kotlin library that integrates Sentry tracing and error monitoring with Axon Framework via OpenTelemetry. It provides distributed tracing for event-sourced, CQRS applications with minimal configuration.
 
-## Project Context
+## Project Status
 
-- **Language**: Kotlin 1.9.22+
-- **JVM Target**: Java 17
-- **Build Tool**: Gradle 8.5+ with Kotlin DSL
-- **Primary Dependencies**:
-  - Axon Framework 4.9.x
-  - Sentry Java SDK 7.x
-  - OpenTelemetry 1.33.x
-  - Spring Boot 3.2.x (optional, for auto-configuration)
+**Current Phase:** Planning/Documentation
+**Implementation Status:** Project structure created, no source code yet
+
+This repository currently contains comprehensive planning documentation but no implementation. The project is organized into detailed implementation issues in `docs/issues/` that provide step-by-step guidance for building the library.
 
 ## Architecture Overview
 
-The library operates through message interceptors that:
-1. Intercept Axon commands, events, and queries
+The library operates through Axon message interceptors that:
+1. Intercept commands, events, and queries
 2. Create OpenTelemetry spans with Axon-specific attributes
 3. Propagate trace context through message metadata
 4. Export spans to Sentry for visualization
 
-Key components:
-- **Core Domain** (`io.github.axonsentry.tracing`): TraceContext, SpanAttributes, configuration models
-- **Sentry Integration** (`io.github.axonsentry.sentry`): SpanExporter, Sentry bridge, initialization
-- **Axon Interceptors** (`io.github.axonsentry.axon`): Message interceptors for commands, events, queries
-- **Spring Boot** (`io.github.axonsentry.spring`): Auto-configuration and properties binding
+**Key Module Structure:**
+- `sentry-tracing` - Core library with interceptors and OTel-Sentry bridge
+- `sentry-tracing-spring-boot-autoconfigure` - Spring Boot auto-configuration
+- `sentry-tracing-spring-boot-starter` - Aggregated starter dependency
+- `sentry-tracing-example` - Demo application
 
-## Development Workflow
+## Build Commands
 
-### Building
 ```bash
+# Build the project
 ./gradlew build
-```
 
-### Testing
-```bash
+# Run tests
 ./gradlew test
-```
 
-### Code Quality
-```bash
+# Run all quality checks
 ./gradlew detekt ktlint
+
+# Run specific module tests
+./gradlew :sentry-tracing:test
+
+# Publish to local Maven repository
+./gradlew publishToMavenLocal
+
+# Run example application (once implemented)
+./gradlew :sentry-tracing-example:bootRun
 ```
 
-### Local Publishing
-```bash
-./gradlew publishToMavenLocal
-```
+## Technology Stack
+
+- **Language:** Kotlin 1.9.22+, targeting JVM 17
+- **Build:** Gradle 8.5+ with Kotlin DSL
+- **Key Dependencies:** Axon Framework 4.9.x, Sentry SDK 7.x, OpenTelemetry 1.33.x, Spring Boot 3.2.x (optional)
+- **Testing:** JUnit 5, Mockk, AssertJ, Axon Test
 
 ## Code Standards
 
-- **Kotlin Coding Conventions**: Follow official Kotlin style guide
-- **detekt**: Zero warnings required
-- **ktlint**: All files must pass linting
-- **Test Coverage**: Minimum 85% for core components
-- **KDoc**: All public APIs must be documented
-- **Immutability**: Prefer immutable data structures
-- **Null Safety**: Leverage Kotlin's null safety features
+- **Kotlin style:** Follow official Kotlin coding conventions
+- **Quality gates:** Zero detekt/ktlint warnings required
+- **Test coverage:** Minimum 85% for core components
+- **Documentation:** All public APIs must have KDoc
+- **Immutability:** Prefer immutable data structures, leverage Kotlin's null safety
 
-## Testing Strategy
+## Implementation Guidance
 
-- **Unit Tests**: Test individual components in isolation
-- **Integration Tests**: Test interaction with Axon and OpenTelemetry
-- **Spring Boot Tests**: Test auto-configuration and properties binding
-- **Example Application**: Serves as integration test and documentation
+Detailed implementation documentation is in `docs/issues/` with:
+- **Foundation (001-004):** Project setup, Gradle, domain model, Sentry integration
+- **Core Tracing (005-007):** Command, event, and query interceptors
+- **Integration (008):** Spring Boot auto-configuration
+- **Advanced (009+):** Examples, performance optimization, additional features
 
-Test libraries:
-- JUnit 5 (Jupiter)
-- Mockk (Kotlin mocking)
-- AssertJ (fluent assertions)
-- Axon Test (Axon-specific testing)
-
-## Implementation Issues
-
-Detailed technical documentation for each feature is located in `docs/issues/`:
-
-- **Foundation** (001-004): Project setup, Gradle, domain model, Sentry integration
-- **Core Tracing** (005-007): Command, event, and query interceptors
-- **Integration** (008): Spring Boot auto-configuration
-- **Examples** (009): Sample applications
-
-Each issue contains:
-- Overview and goals
-- Technical requirements
+Each issue includes:
+- Technical requirements with dependencies
 - Implementation guidance with code examples
 - Testing requirements
-- Acceptance criteria
-- Definition of done
+- Acceptance criteria and definition of done
 
-See `docs/issues/README.md` for the complete index.
+**Start with Issue 001** and work sequentially through dependencies.
 
-## Common Development Tasks
+## Common Development Patterns
 
 ### Adding a New Interceptor
 
 1. Create factory class in `io.github.axonsentry.axon`
-2. Implement dispatch and handler interceptors
+2. Implement dispatch and handler interceptor methods
 3. Add span attributes to `SpanAttributes` object
 4. Register in Spring auto-configuration
 5. Add configuration properties
-6. Write comprehensive tests
-7. Update documentation
+6. Write unit and integration tests
 
-### Adding New Span Attributes
+### Span Creation Pattern
 
-1. Add constant to `SpanAttributes` object
-2. Follow OpenTelemetry semantic conventions
-3. Document attribute purpose in KDoc
-4. Use attribute in appropriate interceptors
-5. Add tests verifying attribute capture
+```kotlin
+// Spans follow OpenTelemetry conventions
+val span = tracer.spanBuilder("Command: ${commandName}")
+    .setSpanKind(SpanKind.CLIENT)
+    .setAttribute("axon.message.type", "command")
+    .setAttribute("axon.message.id", messageId)
+    .startSpan()
 
-### Modifying Configuration
-
-1. Update `TracingConfiguration` data class
-2. Update `AxonSentryTracingProperties` for Spring Boot
-3. Add validation if needed
-4. Update configuration metadata JSON
-5. Document in README and user guide
-6. Add tests for new configuration
-
-## Directory Structure
-
-```
-axon-sentry-tracing/
-├── docs/
-│   ├── issues/              # Implementation documentation
-│   ├── api/                 # Generated API docs
-│   ├── guides/              # User guides
-│   └── architecture/        # Architecture decisions
-├── src/
-│   ├── main/
-│   │   ├── kotlin/
-│   │   │   └── io/github/axonsentry/
-│   │   │       ├── tracing/        # Core domain models
-│   │   │       ├── config/         # Configuration
-│   │   │       ├── sentry/         # Sentry integration
-│   │   │       ├── axon/           # Axon interceptors
-│   │   │       └── spring/         # Spring Boot support
-│   │   └── resources/
-│   │       └── META-INF/
-│   │           └── spring/         # Auto-config registration
-│   └── test/
-│       ├── kotlin/          # Tests
-│       └── resources/       # Test resources
-├── examples/
-│   └── spring-boot-demo/    # Example application
-├── build.gradle.kts
-├── settings.gradle.kts
-├── README.md
-└── CLAUDE.md               # This file
+try {
+    return span.makeCurrent().use { scope ->
+        // Execute message handling
+    }
+} catch (e: Exception) {
+    span.recordException(e)
+    span.setStatus(StatusCode.ERROR)
+    throw e
+} finally {
+    span.end()
+}
 ```
 
-## Dependencies Management
+## Testing Strategy
 
-Dependencies are managed in `gradle.properties`:
-- Keep versions centralized
-- Document why each dependency is needed
-- Use `api` scope for exposed dependencies (Axon, OTel, Sentry)
-- Use `implementation` scope for internal dependencies
-- Mark Spring Boot as `compileOnly` to make it optional
-
-## Git Workflow
-
-1. Create feature branch from main
-2. Make atomic commits with clear messages
-3. Run all tests and quality checks before pushing
-4. Create PR with description referencing issue
-5. Address review feedback
-6. Squash merge to main
-
-Commit message format:
-```
-feat: Add saga tracing support (#009)
-
-- Implement SagaDispatchInterceptor
-- Add saga-specific span attributes
-- Update Spring auto-configuration
-- Add integration tests
-
-Closes #009
-```
+- **Unit tests:** Test components in isolation with Mockk
+- **Integration tests:** Test Axon + OpenTelemetry + Sentry integration
+- **Spring Boot tests:** Test auto-configuration and properties binding
+- **Example app:** Serves as integration test and documentation
 
 ## OpenTelemetry Best Practices
 
 - Use appropriate SpanKind (CLIENT, SERVER, PRODUCER, CONSUMER, INTERNAL)
 - Follow semantic conventions where applicable
 - Add Axon-specific attributes with `axon.` prefix
-- Ensure spans are always ended (use try-finally or use {})
-- Propagate context through metadata, not thread locals
-- Use current context as parent by default
-
-## Sentry Integration Notes
-
-- Spans are batched for efficiency
-- Root spans become Sentry transactions
-- Child spans are nested appropriately
-- Exceptions are captured and linked to spans
-- Sampling is applied at trace level
-- DSN can come from env var or config
+- Always end spans (use try-finally or `.use {}`)
+- Propagate context through metadata, not ThreadLocals
+- Batch span exports for efficiency
 
 ## Performance Considerations
 
-- Span creation is lightweight (~10-50μs)
-- Metadata serialization adds minimal overhead
+- Span creation: ~10-50μs per span
 - Async batched export prevents blocking
 - Sampling reduces overhead in production
 - Payload capture is opt-in (can be large/sensitive)
-- Filter spans before export when possible
 
-## Debugging Tips
+## Debugging
 
-- Enable DEBUG logging: `io.github.axonsentry=DEBUG`
-- Check health endpoint: `/actuator/health`
+- Enable debug logging: `io.github.axonsentry=DEBUG`
 - Verify Sentry DSN configuration
-- Use Sentry debug mode for troubleshooting
-- Inspect message metadata for trace context
-- Check OpenTelemetry span export logs
+- Check message metadata for trace context
+- Review OpenTelemetry span export logs
 
-## Common Issues
+## Git Workflow
 
-**Issue**: Spans not appearing in Sentry
-- Check Sentry DSN is configured
-- Verify `enabled=true` in configuration
-- Check sample rate is > 0
-- Review Sentry exporter logs
+1. Create feature branch from `main`
+2. Make atomic commits with clear messages
+3. Run all tests and quality checks before pushing
+4. Create PR with description referencing issue
+5. Squash merge to main after approval
 
-**Issue**: Missing trace context in downstream events
-- Verify dispatch interceptor is registered
-- Check metadata enrichment is working
-- Ensure parent context is active
+**Commit message format:**
+```
+feat: Add saga tracing support (#009)
 
-**Issue**: High overhead
-- Reduce sample rate
-- Disable payload capture
-- Filter spans at export
-
-## Release Process
-
-1. Update version in `gradle.properties`
-2. Update CHANGELOG.md
-3. Run full test suite
-4. Build and test locally
-5. Create release tag
-6. Publish to Maven Central
-7. Create GitHub release
-8. Update documentation
+- Implement SagaDispatchInterceptor
+- Add saga-specific span attributes
+- Update Spring auto-configuration
+```
 
 ## Resources
 
@@ -257,8 +167,6 @@ Closes #009
 - [OpenTelemetry Java](https://opentelemetry.io/docs/instrumentation/java/)
 - [Sentry Java SDK](https://docs.sentry.io/platforms/java/)
 - [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
-- [Kotlin Language Guide](https://kotlinlang.org/docs/home.html)
+- [Kotlin Style Guide](https://kotlinlang.org/docs/coding-conventions.html)
 
-## Questions?
-
-See `docs/issues/README.md` for comprehensive implementation guidance, or review existing issues for patterns and examples.
+For comprehensive implementation guidance, see `docs/issues/README.md`.

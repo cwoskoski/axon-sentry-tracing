@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: axon-sentry-tracing-example
+
+# Placeholder - will be configured in Phase 1
+axon:
+  sentry:
+    tracing:
+      enabled: false

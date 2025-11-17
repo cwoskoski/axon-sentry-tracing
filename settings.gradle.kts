@@ -17,5 +17,5 @@ include(
     "sentry-tracing",
     "sentry-tracing-spring-boot-autoconfigure",
     "sentry-tracing-spring-boot-starter",
-    "sentry-tracing-example"
+    "sentry-tracing-example",
 )

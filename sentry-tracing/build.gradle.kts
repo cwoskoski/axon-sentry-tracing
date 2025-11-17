@@ -18,11 +18,16 @@ dependencies {
 
     // Sentry
     api("io.sentry:sentry:${property("sentryVersion")}")
+    implementation("io.sentry:sentry-opentelemetry-core:${property("sentryVersion")}")
 
     // OpenTelemetry
     api("io.opentelemetry:opentelemetry-api:${property("openTelemetryVersion")}")
     implementation("io.opentelemetry:opentelemetry-sdk:${property("openTelemetryVersion")}")
+    implementation("io.opentelemetry:opentelemetry-sdk-trace:${property("openTelemetryVersion")}")
     implementation("io.opentelemetry:opentelemetry-extension-kotlin:${property("openTelemetryVersion")}")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // Logging (SLF4J API)
     implementation("org.slf4j:slf4j-api:2.0.9")

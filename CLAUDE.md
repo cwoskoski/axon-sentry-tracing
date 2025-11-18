@@ -80,6 +80,34 @@ Each issue includes:
 
 **Start with Issue 001** and work sequentially through dependencies.
 
+## Issue Tracking
+
+**IMPORTANT:** When working on issues, you MUST keep `docs/issues/STATUS.md` updated:
+
+1. **When Starting an Issue:**
+   - Update the issue status from "🔴 Not Started" to "🟡 In Progress"
+   - Update the "Current Sprint" section to list the active issue
+   - Update the overall progress metrics
+
+2. **When Completing an Issue:**
+   - Update the issue status from "🟡 In Progress" to "🟢 Completed"
+   - Move the issue to "Completed This Sprint" section
+   - Update all progress metrics (overall, phase, priority, complexity)
+   - Update progress bars and completion percentages
+   - Add entry to "Recent Activity" section with completion date
+
+3. **When Blocked:**
+   - Update issue status to "🔴 Blocked"
+   - Add details to "Blockers & Risks" section
+   - Document blocker details and required resolution
+
+4. **After Each Work Session:**
+   - Review and update the "Last Updated" date
+   - Verify all metrics are accurate
+   - Commit STATUS.md changes along with implementation changes
+
+The STATUS.md file is the single source of truth for project progress tracking. Keeping it updated ensures accurate visibility into project health and completion status.
+
 ## Common Development Patterns
 
 ### Adding a New Interceptor

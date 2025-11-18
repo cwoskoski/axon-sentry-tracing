@@ -23,7 +23,7 @@
 ## 🎯 Milestone Progress
 
 ### Phase 0: Foundation & Setup (Week 1)
-**Goal:** Buildable multi-module Gradle project with CI/CD
+**Goal:** Buildable multi-module Gradle project with core tracing interceptors
 **Status:** 🟡 In Progress
 **Progress:** 4/8 issues (50%)
 **Target Date:** Week 1
@@ -32,15 +32,15 @@
 |-------|-------|----------|------------|--------|----------|
 | 001 | Project Structure & Repository Setup | Critical | Small | 🟢 Completed | Claude |
 | 002 | Root Gradle Build Configuration | Critical | Medium | 🟢 Completed | Claude |
-| 003 | Core Module Gradle Setup | Critical | Medium | 🟢 Completed | Claude |
-| 004 | AutoConfigure Module Gradle Setup | High | Small | 🟢 Completed | Claude |
-| 005 | Starter Module Gradle Setup | High | Small | 🔴 Not Started | - |
-| 006 | Example Module Gradle Setup | Medium | Small | 🔴 Not Started | - |
-| 007 | GitHub Actions CI/CD Pipeline | High | Medium | 🔴 Not Started | - |
-| 008 | Code Quality Tools Setup | Medium | Medium | 🔴 Not Started | - |
+| 003 | Core Domain Model | Critical | Medium | 🟢 Completed | Claude |
+| 004 | OpenTelemetry-Sentry Integration | Critical | Large | 🟢 Completed | Claude |
+| 005 | Command Tracing Interceptor | Critical | Large | 🔴 Not Started | - |
+| 006 | Event Tracing Interceptor | Critical | Large | 🔴 Not Started | - |
+| 007 | Query Tracing Interceptor | Critical | Large | 🔴 Not Started | - |
+| 008 | Spring Boot Auto-Configuration | Critical | Large | 🔴 Not Started | - |
 
 **Blockers:** None
-**Notes:** Critical path foundation in place! Project builds successfully. Issues 001-004 completed.
+**Notes:** Critical path foundation in place! Project builds successfully with domain model and Sentry integration. Issues 001-004 completed.
 
 ---
 
@@ -226,17 +226,17 @@ Phase 5: [░░░░░░░░░░] 0% (0/6)
 
 ### Priority Distribution
 ```
-Critical: [███░░░░░░░] 30% (3/10 completed)
-High:     [█░░░░░░░░░] 6% (1/17 completed)
-Medium:   [░░░░░░░░░░] 0% (0/23 completed)
+Critical: [██░░░░░░░░] 25% (4/16 completed)
+High:     [░░░░░░░░░░] 0% (0/17 completed)
+Medium:   [░░░░░░░░░░] 0% (0/17 completed)
 Low:      [░░░░░░░░░░] 0% (0/2 completed)
 ```
 
 ### Complexity Distribution
 ```
-Small:   [████░░░░░░] 40% (2/5 completed)
-Medium:  [██░░░░░░░░] 15% (2/13 completed)
-Large:   [░░░░░░░░░░] 0% (0/11 completed)
+Small:   [█████████░] 100% (1/1 completed)
+Medium:  [████░░░░░░] 33% (2/6 completed)
+Large:   [█░░░░░░░░░] 6% (1/16 completed)
 XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 ```
 
@@ -319,7 +319,9 @@ XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 
 ### 2025-11-18
 - **Documentation Update**: Added issue tracking guidance to CLAUDE.md
+- **Issue Mapping Correction**: Fixed Phase 0 issue mapping to match actual implementation files (005-008 are interceptors, not CI/CD)
 - **Status Update**: Updated STATUS.md to reflect completion of Issues 001-004
+- **Metrics Recalculation**: Updated priority and complexity distributions to reflect corrected issue structure
 
 ### 2025-11-17
 - **Issue 004 Complete**: OpenTelemetry-Sentry Integration Core - Domain model and Sentry initializer implemented

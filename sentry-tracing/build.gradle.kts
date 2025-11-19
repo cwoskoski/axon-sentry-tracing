@@ -35,6 +35,9 @@ dependencies {
     // Testing - Axon Test
     testImplementation("org.axonframework:axon-test:${property("axonVersion")}")
 
+    // Testing - OpenTelemetry SDK Testing
+    testImplementation("io.opentelemetry:opentelemetry-sdk-testing:${property("openTelemetryVersion")}")
+
     // Testing - Logging implementation for tests
     testImplementation("ch.qos.logback:logback-classic:1.4.14")
 }

@@ -81,7 +81,9 @@ class CommandTracingInterceptor(
                     span.end()
 
                     message.andMetaData(enrichedMetadata)
-                } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                } catch (
+                    @Suppress("TooGenericExceptionCaught") e: Exception,
+                ) {
                     logger.error("Failed to propagate trace context in command", e)
                     span.recordException(e)
                     span.setStatus(StatusCode.ERROR)
@@ -121,11 +123,12 @@ class CommandTracingInterceptor(
         val parentContext = extractParentContext(command)
         val handlerClass = extractHandlerClass(unitOfWork)
 
+        // Handler method name not available from UnitOfWork
         val span =
             spanFactory.createCommandHandlerSpan(
                 command,
                 handlerClass,
-                "", // Handler method name not available from UnitOfWork
+                "",
                 parentContext,
             )
 
@@ -161,8 +164,9 @@ class CommandTracingInterceptor(
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private fun extractParentContext(command: CommandMessage<*>): Context {
         return try {
-            val traceContextMap = command.metaData[MessageMetadataKeys.TRACE_CONTEXT] as? Map<*, *>
-                ?: return Context.current()
+            val traceContextMap =
+                command.metaData[MessageMetadataKeys.TRACE_CONTEXT] as? Map<*, *>
+                    ?: return Context.current()
 
             @Suppress("UNCHECKED_CAST")
             TraceContext.fromMetadata(traceContextMap as Map<String, Any>)

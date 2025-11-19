@@ -58,6 +58,14 @@ data class TraceContext(
             }.build(),
         )
 
+    /**
+     * Converts to OpenTelemetry Context with this trace context as parent.
+     *
+     * @return OpenTelemetry Context with this trace as parent
+     */
+    fun toContext(): io.opentelemetry.context.Context =
+        io.opentelemetry.context.Context.root().with(io.opentelemetry.api.trace.Span.wrap(toSpanContext()))
+
     companion object {
         private const val TRACE_ID_KEY = "_trace_id"
         private const val SPAN_ID_KEY = "_span_id"

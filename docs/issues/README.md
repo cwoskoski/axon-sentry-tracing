@@ -17,148 +17,143 @@ This directory contains comprehensive technical documentation for implementing t
 
 ## Implementation Phases
 
-### Phase 0: Foundation & Setup (Issues 001-008)
-Buildable multi-module Gradle project with CI/CD.
+### Phase 0: Foundation & Setup (Issues 001-005)
+Buildable multi-module Gradle project with core domain model and SpanFactory.
 
-- **[001: Project Setup](./001-project-setup.md)** - Repository structure, Git configuration, documentation framework
-- **[002: Gradle Configuration](./002-gradle-configuration.md)** - Build system, dependencies, plugins, publishing
-- **[003: Core Domain Model](./003-core-domain-model.md)** - TraceContext, SpanAttributes, TracingConfiguration, metadata keys
-- **[004: OpenTelemetry-Sentry Integration](./004-opentelemetry-sentry-integration.md)** - SpanExporter, Sentry bridge, initialization
-- **[005: Command Tracing Interceptor](./005-command-tracing-interceptor.md)** - Command dispatch and handler tracing
-- **[006: Event Tracing Interceptor](./006-event-tracing-interceptor.md)** - Event publication and processor tracing
-- **[007: Query Tracing Interceptor](./007-query-tracing-interceptor.md)** - Query dispatch, handler, and subscription tracing
-- **[008: Spring Boot Auto-Configuration](./008-spring-boot-autoconfiguration.md)** - Auto-config, properties, health indicators
+- **[001: Project Setup](./001-project-setup.md)** - Repository structure, Git configuration
+- **[002: Gradle Configuration](./002-gradle-configuration.md)** - Build system, dependencies, plugins
+- **[003: Core Domain Model](./003-core-domain-model.md)** - TraceContext, SpanAttributes, Configuration
+- **[004: OpenTelemetry-Sentry Integration](./004-opentelemetry-sentry-integration.md)** - Sentry bridge, initialization
+- **[005: Sentry Axon SpanFactory](./005-sentry-axon-spanfactory.md)** - Central span creation factory
 
-### Phase 1: Core Integration (Issues 009-020) ⭐ MVP
+### Phase 1: Core Integration (Issues 006-017) ⭐ MVP
 Basic Sentry tracing working for commands, events, queries.
 
-- **[009: Example Application](./009-example-application.md)** - Demo Spring Boot application with bank account domain
-- **[010: Sentry Axon SpanFactory](./010-sentry-axon-spanfactory.md)** - Core span creation factory for Axon integration
-- **[011: Command Message Tracing](./011-command-message-tracing.md)** - Enhanced command tracing with attributes
-- **[012: Event Message Tracing](./012-event-message-tracing.md)** - Enhanced event tracing with attributes
-- **[013: Query Message Tracing](./013-query-message-tracing.md)** - Enhanced query tracing with attributes
-- **[014: Trace Context Propagation](./014-trace-context-propagation.md)** - Cross-service trace context propagation
-- **[015: Span Attribute Providers](./015-span-attribute-providers.md)** - Extensible span attribute system
-- **[016: Basic Sampling Strategy](./016-basic-sampling-strategy.md)** - Configurable trace sampling
-- **[017: Error Correlation](./017-error-correlation.md)** - Error tracking and correlation
-- **[018: Core Unit Tests](./018-core-unit-tests.md)** - Comprehensive unit test coverage
-- **[019: Core Integration Tests](./019-core-integration-tests.md)** - End-to-end integration tests
-- **[020: MVP Documentation](./020-mvp-documentation.md)** - MVP user documentation and guides
+- **[006: Command Message Tracing](./006-command-message-tracing.md)** - Command interceptor implementation
+- **[007: Event Message Tracing](./007-event-message-tracing.md)** - Event interceptor implementation
+- **[008: Query Message Tracing](./008-query-message-tracing.md)** - Query interceptor implementation
+- **[009: Spring Boot Auto-Configuration](./009-spring-boot-autoconfiguration.md)** - Comprehensive Spring Boot integration
+- **[010: Trace Context Propagation](./010-trace-context-propagation.md)** - Cross-service trace propagation
+- **[011: Span Attribute Providers](./011-span-attribute-providers.md)** - Extensible span attributes
+- **[012: Basic Sampling Strategy](./012-basic-sampling-strategy.md)** - Configurable trace sampling
+- **[013: Error Correlation](./013-error-correlation.md)** - Error tracking and correlation
+- **[014: Core Unit Tests](./014-core-unit-tests.md)** - Comprehensive unit test coverage
+- **[015: Core Integration Tests](./015-core-integration-tests.md)** - End-to-end integration tests
+- **[016: MVP Documentation](./016-mvp-documentation.md)** - MVP user documentation
+- **[017: Example Application](./017-example-application.md)** - Demo Spring Boot application
 
-### Phase 2: Spring Boot Integration (Issues 021-028)
-Zero-config Spring Boot auto-configuration.
+### Phase 2: Spring Boot Integration (Issues 018-022)
+Enhanced Spring Boot features and configuration.
 
-- **[021: Spring Boot Auto-Configuration](./021-spring-boot-autoconfiguration.md)** - Enhanced auto-configuration
-- **[022: Configuration Properties](./022-configuration-properties.md)** - Type-safe configuration properties
-- **[023: Conditional Bean Configuration](./023-conditional-bean-configuration.md)** - Conditional auto-configuration
-- **[024: Health Indicators](./024-health-indicators.md)** - Spring Boot Actuator health indicators
-- **[025: Actuator Metrics Integration](./025-actuator-metrics-integration.md)** - Metrics integration
-- **[026: Spring Boot Starter](./026-spring-boot-starter.md)** - Spring Boot starter module
-- **[027: Spring Boot Tests](./027-spring-boot-tests.md)** - Spring Boot integration tests
-- **[028: Spring Boot Documentation](./028-spring-boot-documentation.md)** - Spring Boot usage documentation
+- **[018: Configuration Properties](./018-configuration-properties.md)** - Type-safe configuration
+- **[019: Conditional Bean Configuration](./019-conditional-bean-configuration.md)** - Conditional auto-config
+- **[020: Health Indicators](./020-health-indicators.md)** - Actuator health indicators
+- **[021: Actuator Metrics Integration](./021-actuator-metrics-integration.md)** - Metrics integration
+- **[022: Spring Boot Tests](./022-spring-boot-tests.md)** - Spring Boot integration tests
 
-### Phase 3: Advanced Features (Issues 029-038)
+### Phase 3: Advanced Features (Issues 023-032)
 Enterprise-grade features (sampling, sagas, performance).
 
-- **[029: Intelligent Sampling Strategies](./029-intelligent-sampling-strategies.md)** - Advanced sampling algorithms
-- **[030: Custom Annotations](./030-custom-annotations.md)** - @SentryTraced annotation support
-- **[031: Saga Tracing Enhancement](./031-saga-tracing-enhancement.md)** - Saga lifecycle tracing
-- **[032: Deadline Tracing](./032-deadline-tracing.md)** - Deadline message tracing
-- **[033: Snapshot Tracing](./033-snapshot-tracing.md)** - Snapshot event tracing
-- **[034: Dead Letter Queue Tracing](./034-dead-letter-queue-tracing.md)** - DLQ integration
-- **[035: Performance Benchmarks](./035-performance-benchmarks.md)** - Performance testing suite
-- **[036: Custom SpanAttributeProvider API](./036-custom-span-attribute-provider-api.md)** - Custom attribute API
-- **[037: Advanced Error Handling](./037-advanced-error-handling.md)** - Enhanced error handling
-- **[038: Advanced Features Tests](./038-advanced-features-tests.md)** - Advanced feature tests
+- **[023: Intelligent Sampling Strategies](./023-intelligent-sampling-strategies.md)** - Advanced sampling algorithms
+- **[024: Custom Annotations](./024-custom-annotations.md)** - @SentryTraced annotation support
+- **[025: Saga Tracing Enhancement](./025-saga-tracing-enhancement.md)** - Saga lifecycle tracing
+- **[026: Deadline Tracing](./026-deadline-tracing.md)** - Deadline message tracing
+- **[027: Snapshot Tracing](./027-snapshot-tracing.md)** - Snapshot event tracing
+- **[028: Dead Letter Queue Tracing](./028-dead-letter-queue-tracing.md)** - DLQ integration
+- **[029: Performance Benchmarks](./029-performance-benchmarks.md)** - Performance testing suite
+- **[030: Custom SpanAttributeProvider API](./030-custom-span-attribute-provider-api.md)** - Custom attribute API
+- **[031: Advanced Error Handling](./031-advanced-error-handling.md)** - Enhanced error handling
+- **[032: Advanced Features Tests](./032-advanced-features-tests.md)** - Advanced feature tests
 
-### Phase 4: Production Readiness (Issues 039-046)
+### Phase 4: Production Readiness (Issues 033-040)
 Quality assurance, security, performance validation.
 
-- **[039: Security Audit](./039-security-audit.md)** - Security assessment and hardening
-- **[040: Performance Optimization](./040-performance-optimization.md)** - Performance tuning
-- **[041: Load Testing](./041-load-testing.md)** - Load and stress testing
-- **[042: Java Interop Testing](./042-java-interop-testing.md)** - Java compatibility testing
-- **[043: Code Coverage Analysis](./043-code-coverage-analysis.md)** - Coverage reporting
-- **[044: Dependency Security Scan](./044-dependency-security-scan.md)** - Dependency vulnerability scanning
-- **[045: Production Configuration Guide](./045-production-configuration-guide.md)** - Production setup guide
-- **[046: Troubleshooting Guide](./046-troubleshooting-guide.md)** - Troubleshooting documentation
+- **[033: Security Audit](./033-security-audit.md)** - Security assessment and hardening
+- **[034: Performance Optimization](./034-performance-optimization.md)** - Performance tuning
+- **[035: Load Testing](./035-load-testing.md)** - Load and stress testing
+- **[036: Java Interop Testing](./036-java-interop-testing.md)** - Java compatibility testing
+- **[037: Code Coverage Analysis](./037-code-coverage-analysis.md)** - Coverage reporting
+- **[038: Dependency Security Scan](./038-dependency-security-scan.md)** - Dependency vulnerability scanning
+- **[039: Production Configuration Guide](./039-production-configuration-guide.md)** - Production setup guide
+- **[040: Troubleshooting Guide](./040-troubleshooting-guide.md)** - Troubleshooting documentation
 
-### Phase 5: Documentation & Examples (Issues 047-052)
-Complete documentation and example application.
+### Phase 5: Documentation & Release (Issues 041-045)
+Complete documentation and v1.0.0 release preparation.
 
-- **[047: Example Application - Order Service](./047-example-application-order-service.md)** - Advanced example application
-- **[048: Architecture Documentation](./048-architecture-documentation.md)** - Architecture guides and ADRs
-- **[049: API Documentation (KDoc)](./049-api-documentation-kdoc.md)** - Comprehensive API docs
-- **[050: User Guide & Tutorials](./050-user-guide-tutorials.md)** - User guides and tutorials
-- **[051: Contributing Guide](./051-contributing-guide.md)** - Contributor documentation
-- **[052: Release Preparation](./052-release-preparation.md)** - v1.0.0 release preparation
+- **[041: Architecture Documentation](./041-architecture-documentation.md)** - Architecture guides and ADRs
+- **[042: API Documentation (KDoc)](./042-api-documentation-kdoc.md)** - Comprehensive API docs
+- **[043: User Guide & Tutorials](./043-user-guide-tutorials.md)** - User guides and tutorials
+- **[044: Contributing Guide](./044-contributing-guide.md)** - Contributor documentation
+- **[045: Release Preparation](./045-release-preparation.md)** - v1.0.0 release preparation
 
 ## Dependency Graph
 
 ```
 Phase 0: Foundation
 001 (Project Setup)
-  └─> 002 (Gradle Config)
-        └─> 003 (Core Domain Model)
-              └─> 004 (OTel-Sentry Integration)
-                    ├─> 005 (Command Tracing)
-                    ├─> 006 (Event Tracing)
-                    ├─> 007 (Query Tracing)
-                    └─> 008 (Spring Boot Auto-Config)
-
-Phase 1: Core Integration (MVP)
-009 (Example App) ←─ 008
-010 (SpanFactory) ←─ 004
-  ├─> 011 (Enhanced Command Tracing) ←─ 005
-  ├─> 012 (Enhanced Event Tracing) ←─ 006
-  └─> 013 (Enhanced Query Tracing) ←─ 007
-        └─> 014 (Trace Context Propagation)
-              ├─> 015 (Span Attribute Providers)
-              ├─> 016 (Basic Sampling)
-              └─> 017 (Error Correlation)
-                    ├─> 018 (Core Unit Tests)
-                    ├─> 019 (Core Integration Tests)
-                    └─> 020 (MVP Documentation)
+  ↓
+002 (Gradle Config)
+  ↓
+003 (Core Domain Model)
+  ↓
+004 (OTel-Sentry Integration)
+  ↓
+005 (Sentry Axon SpanFactory) ← ENABLES Phase 1
+  ↓
+  ├─> 006 (Command Tracing) ⭐ Can parallelize
+  ├─> 007 (Event Tracing) ⭐ Can parallelize
+  └─> 008 (Query Tracing) ⭐ Can parallelize
+        ↓
+009 (Spring Boot Auto-Config)
+  ↓
+010 (Trace Context Propagation)
+  ↓
+├─> 011 (Span Attribute Providers)
+├─> 012 (Basic Sampling)
+└─> 013 (Error Correlation)
+      ↓
+  ├─> 014 (Core Unit Tests)
+  ├─> 015 (Core Integration Tests)
+  ├─> 016 (MVP Documentation)
+  └─> 017 (Example Application)
+        ↓
+🎉 MVP COMPLETE (Phase 1)
 
 Phase 2: Spring Boot Integration
-021 (Enhanced Auto-Config) ←─ 008
-  ├─> 022 (Configuration Properties)
-  ├─> 023 (Conditional Beans)
-  ├─> 024 (Health Indicators)
-  └─> 025 (Actuator Metrics)
-        └─> 026 (Spring Boot Starter)
-              ├─> 027 (Spring Boot Tests)
-              └─> 028 (Spring Boot Docs)
+018 (Configuration Properties) ←─ 009
+019 (Conditional Beans) ←─ 009
+020 (Health Indicators) ←─ 009
+021 (Actuator Metrics) ←─ 009
+022 (Spring Boot Tests) ←─ 009
 
 Phase 3: Advanced Features
-029 (Intelligent Sampling) ←─ 016
-030 (Custom Annotations) ←─ 015
-031 (Saga Tracing) ←─ 014
-032 (Deadline Tracing) ←─ 014
-033 (Snapshot Tracing) ←─ 014
-034 (DLQ Tracing) ←─ 017
-035 (Performance Benchmarks) ←─ 020
-036 (Custom Attribute API) ←─ 015
-037 (Advanced Error Handling) ←─ 017
-038 (Advanced Tests) ←─ 019
+023 (Intelligent Sampling) ←─ 012
+024 (Custom Annotations) ←─ 011
+025 (Saga Tracing) ←─ 010
+026 (Deadline Tracing) ←─ 010
+027 (Snapshot Tracing) ←─ 010
+028 (DLQ Tracing) ←─ 013
+029 (Performance Benchmarks) ←─ 015
+030 (Custom Attribute API) ←─ 011
+031 (Advanced Error Handling) ←─ 013
+032 (Advanced Tests) ←─ 015
 
 Phase 4: Production Readiness
-039 (Security Audit) ←─ 038
-040 (Performance Optimization) ←─ 035
-041 (Load Testing) ←─ 035
-042 (Java Interop Testing) ←─ 038
-043 (Code Coverage) ←─ 038
-044 (Dependency Security) ←─ 039
-045 (Production Config Guide) ←─ 040
-046 (Troubleshooting Guide) ←─ 037
+033 (Security Audit) ←─ 032
+034 (Performance Optimization) ←─ 029
+035 (Load Testing) ←─ 029
+036 (Java Interop Testing) ←─ 032
+037 (Code Coverage) ←─ 032
+038 (Dependency Security) ←─ 033
+039 (Production Config Guide) ←─ 034
+040 (Troubleshooting Guide) ←─ 031
 
 Phase 5: Documentation & Release
-047 (Order Service Example) ←─ 009
-048 (Architecture Docs) ←─ 046
-049 (API Documentation) ←─ 046
-050 (User Guide) ←─ 046
-051 (Contributing Guide) ←─ 050
-052 (Release Prep) ←─ All
+041 (Architecture Docs) ←─ 040
+042 (API Documentation) ←─ 040
+043 (User Guide) ←─ 040
+044 (Contributing Guide) ←─ 043
+045 (Release Prep) ←─ All
 ```
 
 ## Issue Template Structure
@@ -181,12 +176,12 @@ Each issue follows a consistent template:
 
 ### For Implementers
 
-1. **Start with Phase 1** - Foundation issues must be completed in order
-2. **Read Dependencies** - Each issue lists prerequisite issues
+1. **Start with Phase 0** - Foundation issues (001-005) must be completed in order
+2. **Read Dependencies** - Each issue lists prerequisite issues in the header
 3. **Follow the Template** - Use provided code examples as starting points
 4. **Run Tests** - Ensure all tests pass before marking issue complete
 5. **Update Documentation** - Keep docs in sync with implementation
-6. **Mark Complete** - Update issue status when Definition of Done is met
+6. **Mark Complete** - Update issue status in STATUS.md when Definition of Done is met
 
 ### For Project Managers
 
@@ -367,15 +362,15 @@ axon-sentry-tracing/
 
 The project will be considered successful when:
 
-- [ ] All Phase 1-3 issues completed (minimal viable product)
+- [ ] All Phase 0-1 issues completed (minimal viable product - MVP)
 - [ ] Test coverage > 85% across all modules
 - [ ] Zero detekt or ktlint violations
-- [ ] Spans visible in Sentry UI
-- [ ] Spring Boot auto-configuration works
-- [ ] Published to Maven Central
-- [ ] Documentation complete and clear
-- [ ] At least one sample application
+- [ ] Spans visible in Sentry UI with correct relationships
+- [ ] Spring Boot auto-configuration works with zero config
+- [ ] Complete API documentation with KDoc
+- [ ] Example application demonstrates all features
 - [ ] Performance overhead < 5% in typical scenarios
+- [ ] Published to Maven Central (v1.0.0)
 
 ## Support and Questions
 
@@ -392,7 +387,7 @@ This project is licensed under the Apache License 2.0. See LICENSE file for deta
 
 ---
 
-**Last Updated**: 2025-11-17
-**Total Issues**: 52 (all created)
+**Last Updated**: 2025-11-19
+**Total Issues**: 41 (all created)
 **Phase**: Foundation (Phase 0)
-**Status**: Ready for implementation
+**Status**: 4/5 issues complete, Issue 005 next

@@ -8,10 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-**Current Phase:** Planning/Documentation
-**Implementation Status:** Project structure created, no source code yet
+**Current Phase:** Phase 0 - Foundation & Setup (80% Complete)
+**Implementation Status:** 4 of 5 foundation issues complete, ready for Issue 005
+**Next Task:** Issue 005 - Sentry Axon SpanFactory
 
-This repository currently contains comprehensive planning documentation but no implementation. The project is organized into detailed implementation issues in `docs/issues/` that provide step-by-step guidance for building the library.
+This repository contains a buildable multi-module project with core domain model and Sentry integration. Issues 001-004 are complete. The project is organized into 41 detailed implementation issues in `docs/issues/` that provide step-by-step guidance for building the library.
 
 ## Architecture Overview
 
@@ -66,11 +67,23 @@ The library operates through Axon message interceptors that:
 
 ## Implementation Guidance
 
-Detailed implementation documentation is in `docs/issues/` with:
-- **Foundation (001-004):** Project setup, Gradle, domain model, Sentry integration
-- **Core Tracing (005-007):** Command, event, and query interceptors
-- **Integration (008):** Spring Boot auto-configuration
-- **Advanced (009+):** Examples, performance optimization, additional features
+Detailed implementation documentation is in `docs/issues/` organized into phases:
+
+- **Phase 0 (001-005):** Foundation & Setup
+  - 001-004: Complete ✅ (Project setup, Gradle, domain model, Sentry integration)
+  - 005: **Sentry Axon SpanFactory** ← NEXT TO IMPLEMENT
+
+- **Phase 1 (006-017):** Core Integration ⭐ MVP
+  - 006-008: Command, Event, Query message tracing
+  - 009: Comprehensive Spring Boot auto-configuration
+  - 010-017: Context propagation, sampling, testing, example app
+
+- **Phase 2 (018-022):** Enhanced Spring Boot features
+- **Phase 3 (023-032):** Advanced features (sagas, sampling strategies)
+- **Phase 4 (033-040):** Production readiness (security, performance, testing)
+- **Phase 5 (041-045):** Documentation and release preparation
+
+**Total Issues:** 41 (was 52, restructured 2025-11-19)
 
 Each issue includes:
 - Technical requirements with dependencies
@@ -78,7 +91,7 @@ Each issue includes:
 - Testing requirements
 - Acceptance criteria and definition of done
 
-**Start with Issue 001** and work sequentially through dependencies.
+**Current Focus:** Complete Issue 005 to enable Phase 1 interceptor implementation.
 
 ## Issue Tracking
 

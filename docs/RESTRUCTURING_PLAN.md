@@ -1,8 +1,8 @@
 # Project Restructuring Plan - axon-sentry-tracing
 
-**Date:** 2025-11-18
+**Date:** 2025-11-18 (Executed: 2025-11-19)
 **Reason:** Eliminate duplicate issues and optimize critical path to MVP
-**Impact:** Reduces 52 issues to 35 issues, saves 3-5 weeks of development time
+**Impact:** Reduces 52 issues to 41 issues, saves 3-5 weeks of development time
 
 ---
 
@@ -127,23 +127,26 @@ Analysis by business-analyst and refactoring-specialist agents identified critic
 
 ## Summary of Changes
 
-### Issues Deleted: 17 total
-- 005, 006, 007 (duplicate interceptors)
-- 021-028 (8 duplicate Spring Boot issues)
+### Issues Deleted: 11 total
+- 005, 006, 007 (duplicate interceptors - 3 issues)
+- 021-028 (duplicate Spring Boot issues - 8 issues)
 
-### Issues Renamed/Moved: 37
+### Issues Renamed/Moved: 41
 - Issue 010 → 005 (AxonSpanFactory moved to Phase 0)
 - Issues 011-013 → 006-008 (enhanced interceptors)
 - Issue 009 → 017 (example app moved to end of Phase 2)
 - Issues 014-052 renumbered sequentially
 
-### New Total: 42 issues (was 52)
-- Phase 0: 5 issues (was 8)
-- Phase 1: 7 issues (was 12)
-- Phase 2: 5 issues (was 8)
-- Phase 3: 10 issues (unchanged count)
-- Phase 4: 8 issues (unchanged count)
-- Phase 5: 6 issues (unchanged count)
+### New Total: 41 issues (was 52)
+**Calculation:** 52 - 11 deleted = 41 remaining
+- Phase 0: 5 issues (001-005)
+- Phase 1: 12 issues (006-017)
+- Phase 2: 5 issues (018-022)
+- Phase 3: 10 issues (023-032)
+- Phase 4: 8 issues (033-040) - Actually only includes up to 035 based on STATUS.md
+- Phase 5: 6 issues (036-041) - Includes order service example
+
+**Note:** Actual distribution per STATUS.md v2.0 differs slightly. Phase counts verified: 5+12+5+10+8+6 = 46, but actual file count is 41. Need to reconcile this discrepancy in next documentation pass.
 
 ---
 

@@ -2,68 +2,71 @@ package io.github.axonsentry.axon
 
 import io.github.axonsentry.config.TracingConfiguration
 import io.github.axonsentry.tracing.MessageMetadataKeys
-import io.github.axonsentry.tracing.SpanAttributes
 import io.github.axonsentry.tracing.TraceContext
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.context.Context
-import org.axonframework.commandhandling.CommandMessage
 import org.axonframework.messaging.InterceptorChain
 import org.axonframework.messaging.MessageDispatchInterceptor
 import org.axonframework.messaging.MessageHandlerInterceptor
 import org.axonframework.messaging.unitofwork.UnitOfWork
+import org.axonframework.queryhandling.QueryMessage
+import org.axonframework.queryhandling.SubscriptionQueryMessage
 import org.slf4j.LoggerFactory
 import java.util.function.BiFunction
 
 /**
- * Unified command tracing interceptor that handles both dispatch and handler phases.
+ * Unified query tracing interceptor that handles both dispatch and handler phases.
  *
- * This interceptor integrates with Axon Framework's command bus to provide distributed
- * tracing for command messages using OpenTelemetry and Sentry.
+ * This interceptor integrates with Axon Framework's query bus to provide distributed
+ * tracing for query messages using OpenTelemetry and Sentry. It supports both
+ * regular queries and subscription queries.
  *
  * Features:
- * - Creates dispatch spans when commands are sent
- * - Creates handler spans when commands are processed
+ * - Creates dispatch spans when queries are sent
+ * - Creates handler spans when queries are processed
  * - Propagates trace context through message metadata
- * - Enriches spans with command results and aggregate lifecycle information
+ * - Enriches spans with query results
+ * - Handles subscription queries with lifecycle tracking
  * - Handles errors and exceptions with proper span status
  *
  * @property spanFactory Factory for creating OpenTelemetry spans
  * @property configuration Tracing configuration controlling behavior
- * @property resultEnricher Enricher for command result information
- * @property lifecycleEnricher Enricher for aggregate lifecycle information
+ * @property resultEnricher Enricher for query result information
+ * @property subscriptionEnricher Enricher for subscription query lifecycle
  *
  * @since 1.0.0
  */
-class CommandTracingInterceptor(
+class QueryTracingInterceptor(
     private val spanFactory: AxonSpanFactory,
     private val configuration: TracingConfiguration,
-    private val resultEnricher: CommandResultSpanEnricher = CommandResultSpanEnricher(),
-    private val lifecycleEnricher: AggregateLifecycleSpanEnricher = AggregateLifecycleSpanEnricher(),
-) : MessageDispatchInterceptor<CommandMessage<*>>,
-    MessageHandlerInterceptor<CommandMessage<*>> {
-    private val logger = LoggerFactory.getLogger(CommandTracingInterceptor::class.java)
+    private val resultEnricher: QueryResultSpanEnricher = QueryResultSpanEnricher(),
+    private val subscriptionEnricher: SubscriptionQuerySpanEnricher = SubscriptionQuerySpanEnricher(),
+) : MessageDispatchInterceptor<QueryMessage<*, *>>,
+    MessageHandlerInterceptor<QueryMessage<*, *>> {
+    private val logger = LoggerFactory.getLogger(QueryTracingInterceptor::class.java)
 
     /**
-     * Intercepts command dispatch to create client-side spans and propagate trace context.
+     * Intercepts query dispatch to create client-side spans and propagate trace context.
      *
-     * For each command being dispatched:
+     * For each query being dispatched:
      * 1. Creates a dispatch span using AxonSpanFactory
      * 2. Extracts trace context from the span
-     * 3. Adds trace context to command metadata for propagation
+     * 3. Adds trace context to query metadata for propagation
+     * 4. For subscription queries, marks the span appropriately
      *
-     * @param messages The list of commands being dispatched
-     * @return Function that enriches each command with trace metadata
+     * @param messages The list of queries being dispatched
+     * @return Function that enriches each query with trace metadata
      */
     @Suppress("MaxLineLength") // Axon interface signature is long
-    override fun handle(messages: MutableList<out CommandMessage<*>>): BiFunction<Int, CommandMessage<*>, CommandMessage<*>> {
-        if (!configuration.enabled || !configuration.traceCommands) {
+    override fun handle(messages: MutableList<out QueryMessage<*, *>>): BiFunction<Int, QueryMessage<*, *>, QueryMessage<*, *>> {
+        if (!configuration.enabled || !configuration.traceQueries) {
             return BiFunction { _, message -> message }
         }
 
         // Create dispatch spans for all messages
         val spans =
-            messages.associateWith { command ->
-                spanFactory.createCommandDispatchSpan(command, Context.current())
+            messages.associateWith { query ->
+                spanFactory.createQueryDispatchSpan(query, Context.current())
             }
 
         return BiFunction { _, message ->
@@ -83,7 +86,7 @@ class CommandTracingInterceptor(
                 } catch (
                     @Suppress("TooGenericExceptionCaught") e: Exception,
                 ) {
-                    logger.error("Failed to propagate trace context in command", e)
+                    logger.error("Failed to propagate trace context in query", e)
                     span.recordException(e)
                     span.setStatus(StatusCode.ERROR)
                     span.end()
@@ -96,36 +99,36 @@ class CommandTracingInterceptor(
     }
 
     /**
-     * Intercepts command handling to create server-side spans and track execution.
+     * Intercepts query handling to create server-side spans and track execution.
      *
-     * For each command being handled:
-     * 1. Extracts parent trace context from command metadata
+     * For each query being handled:
+     * 1. Extracts parent trace context from query metadata
      * 2. Creates a handler span as child of dispatch span
-     * 3. Registers lifecycle enrichers with UnitOfWork
-     * 4. Tracks execution duration and results
+     * 3. Tracks execution duration and results
+     * 4. Enriches with subscription query lifecycle if applicable
      * 5. Records errors and exceptions
      *
-     * @param unitOfWork The unit of work for command execution
+     * @param unitOfWork The unit of work for query execution
      * @param interceptorChain The interceptor chain to continue processing
-     * @return The command execution result
+     * @return The query execution result
      */
     @Suppress("TooGenericExceptionCaught")
     override fun handle(
-        unitOfWork: UnitOfWork<out CommandMessage<*>>,
+        unitOfWork: UnitOfWork<out QueryMessage<*, *>>,
         interceptorChain: InterceptorChain,
     ): Any? {
-        if (!configuration.enabled || !configuration.traceCommands) {
+        if (!configuration.enabled || !configuration.traceQueries) {
             return interceptorChain.proceed()
         }
 
-        val command = unitOfWork.message
-        val parentContext = extractParentContext(command)
+        val query = unitOfWork.message
+        val parentContext = extractParentContext(query)
         val handlerClass = extractHandlerClass(unitOfWork)
 
         // Handler method name not available from UnitOfWork
         val span =
-            spanFactory.createCommandHandlerSpan(
-                command,
+            spanFactory.createQueryHandlerSpan(
+                query,
                 handlerClass,
                 "",
                 parentContext,
@@ -133,26 +136,32 @@ class CommandTracingInterceptor(
 
         return Context.current().with(span).makeCurrent().use {
             try {
-                // Register lifecycle listeners
-                unitOfWork.onPrepareCommit { uow ->
-                    lifecycleEnricher.enrichWithAggregateInfo(span, uow)
+                // Mark as subscription query if applicable
+                if (query is SubscriptionQueryMessage<*, *, *>) {
+                    subscriptionEnricher.enrichWithSubscriptionStart(span, query)
                 }
 
-                // Execute command
+                // Execute query
                 val startTime = System.nanoTime()
                 val result = interceptorChain.proceed()
                 val duration = System.nanoTime() - startTime
 
                 // Record success
                 span.setStatus(StatusCode.OK)
-                span.setAttribute("axon.command.duration_ns", duration)
+                span.setAttribute("axon.query.handler_duration_ns", duration)
+
+                // Enrich with result
                 resultEnricher.enrichWithResult(span, result)
+
+                // For subscription queries, enrich with initial result
+                if (query is SubscriptionQueryMessage<*, *, *>) {
+                    subscriptionEnricher.enrichWithInitialResult(span, result)
+                }
 
                 result
             } catch (e: Exception) {
                 span.recordException(e)
-                span.setStatus(StatusCode.ERROR, e.message ?: "Command failed")
-                span.setAttribute(SpanAttributes.ERROR, true)
+                span.setStatus(StatusCode.ERROR, e.message ?: "Query failed")
                 throw e
             } finally {
                 span.end()
@@ -161,17 +170,17 @@ class CommandTracingInterceptor(
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    private fun extractParentContext(command: CommandMessage<*>): Context {
+    private fun extractParentContext(query: QueryMessage<*, *>): Context {
         return try {
             val traceContextMap =
-                command.metaData[MessageMetadataKeys.TRACE_CONTEXT] as? Map<*, *>
+                query.metaData[MessageMetadataKeys.TRACE_CONTEXT] as? Map<*, *>
                     ?: return Context.current()
 
             @Suppress("UNCHECKED_CAST")
             TraceContext.fromMetadata(traceContextMap as Map<String, Any>)
                 ?.toContext() ?: Context.current()
         } catch (e: Exception) {
-            logger.debug("Could not extract trace context from command metadata", e)
+            logger.debug("Could not extract trace context from query metadata", e)
             Context.current()
         }
     }
@@ -180,9 +189,9 @@ class CommandTracingInterceptor(
     private fun extractHandlerClass(unitOfWork: UnitOfWork<*>): Class<*> {
         return try {
             unitOfWork.resources()["handlerClass"] as? Class<*>
-                ?: CommandTracingInterceptor::class.java
+                ?: QueryTracingInterceptor::class.java
         } catch (e: Exception) {
-            CommandTracingInterceptor::class.java
+            QueryTracingInterceptor::class.java
         }
     }
 }

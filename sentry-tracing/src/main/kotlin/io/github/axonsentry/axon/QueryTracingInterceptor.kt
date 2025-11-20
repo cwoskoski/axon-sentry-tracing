@@ -1,6 +1,7 @@
 package io.github.axonsentry.axon
 
 import io.github.axonsentry.config.TracingConfiguration
+import io.github.axonsentry.error.ErrorCorrelator
 import io.github.axonsentry.tracing.MessageMetadataKeys
 import io.github.axonsentry.tracing.TraceContext
 import io.opentelemetry.api.trace.StatusCode
@@ -41,6 +42,7 @@ class QueryTracingInterceptor(
     private val configuration: TracingConfiguration,
     private val resultEnricher: QueryResultSpanEnricher = QueryResultSpanEnricher(),
     private val subscriptionEnricher: SubscriptionQuerySpanEnricher = SubscriptionQuerySpanEnricher(),
+    private val errorCorrelator: ErrorCorrelator? = null,
 ) : MessageDispatchInterceptor<QueryMessage<*, *>>,
     MessageHandlerInterceptor<QueryMessage<*, *>> {
     private val logger = LoggerFactory.getLogger(QueryTracingInterceptor::class.java)
@@ -160,8 +162,13 @@ class QueryTracingInterceptor(
 
                 result
             } catch (e: Exception) {
-                span.recordException(e)
-                span.setStatus(StatusCode.ERROR, e.message ?: "Query failed")
+                // Use ErrorCorrelator for comprehensive error handling if available
+                if (errorCorrelator != null) {
+                    errorCorrelator.recordException(span, e, query)
+                } else {
+                    span.recordException(e)
+                    span.setStatus(StatusCode.ERROR, e.message ?: "Query failed")
+                }
                 throw e
             } finally {
                 span.end()

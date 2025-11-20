@@ -1,6 +1,7 @@
 package io.github.axonsentry.axon
 
 import io.github.axonsentry.config.TracingConfiguration
+import io.github.axonsentry.error.ErrorCorrelator
 import io.github.axonsentry.tracing.MessageMetadataKeys
 import io.github.axonsentry.tracing.SpanAttributes
 import io.github.axonsentry.tracing.TraceContext
@@ -31,6 +32,7 @@ import java.util.function.BiFunction
  * @property configuration Tracing configuration controlling behavior
  * @property resultEnricher Enricher for command result information
  * @property lifecycleEnricher Enricher for aggregate lifecycle information
+ * @property errorCorrelator Correlator for exception handling and Sentry integration
  *
  * @since 1.0.0
  */
@@ -39,6 +41,7 @@ class CommandTracingInterceptor(
     private val configuration: TracingConfiguration,
     private val resultEnricher: CommandResultSpanEnricher = CommandResultSpanEnricher(),
     private val lifecycleEnricher: AggregateLifecycleSpanEnricher = AggregateLifecycleSpanEnricher(),
+    private val errorCorrelator: ErrorCorrelator? = null,
 ) : MessageDispatchInterceptor<CommandMessage<*>>,
     MessageHandlerInterceptor<CommandMessage<*>> {
     private val logger = LoggerFactory.getLogger(CommandTracingInterceptor::class.java)
@@ -150,8 +153,13 @@ class CommandTracingInterceptor(
 
                 result
             } catch (e: Exception) {
-                span.recordException(e)
-                span.setStatus(StatusCode.ERROR, e.message ?: "Command failed")
+                // Use ErrorCorrelator for comprehensive error handling if available
+                if (errorCorrelator != null) {
+                    errorCorrelator.recordException(span, e, command)
+                } else {
+                    span.recordException(e)
+                    span.setStatus(StatusCode.ERROR, e.message ?: "Command failed")
+                }
                 span.setAttribute(SpanAttributes.ERROR, true)
                 throw e
             } finally {

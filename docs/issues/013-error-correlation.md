@@ -1,10 +1,10 @@
-# Issue 017: Error Correlation
+# Issue 013: Error Correlation
 
 **Phase:** Core Integration
 **Priority:** High
 **Complexity:** Medium
 **Status:** Not Started
-**Dependencies:** 010, 011, 012, 013
+**Dependencies:** 010, 011, 012
 
 ## Overview
 Implement automatic error correlation between Axon exceptions and Sentry error tracking, ensuring that errors are linked to their traces and enriched with Axon-specific context.

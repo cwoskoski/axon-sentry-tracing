@@ -505,11 +505,12 @@ class TraceContextPropagatorTest {
         @Test
         fun `should handle malformed metadata gracefully`() {
             // Given
+            // Wrong type: should be string, but is integer
             val message =
                 GenericCommandMessage.asCommandMessage<String>("test-command")
                     .andMetaData(
                         mapOf(
-                            "traceparent" to 12345, // Wrong type
+                            "traceparent" to 12345,
                         ),
                     )
 

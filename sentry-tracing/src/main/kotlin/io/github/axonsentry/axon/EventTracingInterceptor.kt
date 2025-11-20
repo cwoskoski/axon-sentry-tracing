@@ -1,6 +1,7 @@
 package io.github.axonsentry.axon
 
 import io.github.axonsentry.config.TracingConfiguration
+import io.github.axonsentry.error.ErrorCorrelator
 import io.github.axonsentry.tracing.MessageMetadataKeys
 import io.github.axonsentry.tracing.TraceContext
 import io.opentelemetry.api.trace.StatusCode
@@ -26,6 +27,7 @@ class EventTracingInterceptor(
     private val configuration: TracingConfiguration,
     private val processorEnricher: EventProcessorSpanEnricher = EventProcessorSpanEnricher(),
     private val domainEventEnricher: DomainEventSpanEnricher = DomainEventSpanEnricher(),
+    private val errorCorrelator: ErrorCorrelator? = null,
 ) : MessageDispatchInterceptor<EventMessage<*>>, MessageHandlerInterceptor<EventMessage<*>> {
     private val logger = LoggerFactory.getLogger(EventTracingInterceptor::class.java)
 
@@ -116,8 +118,13 @@ class EventTracingInterceptor(
             } catch (
                 @Suppress("TooGenericExceptionCaught") e: Exception,
             ) {
-                span.recordException(e)
-                span.setStatus(StatusCode.ERROR, e.message ?: "Event handling failed")
+                // Use ErrorCorrelator for comprehensive error handling if available
+                if (errorCorrelator != null) {
+                    errorCorrelator.recordException(span, e, event)
+                } else {
+                    span.recordException(e)
+                    span.setStatus(StatusCode.ERROR, e.message ?: "Event handling failed")
+                }
                 throw e
             } finally {
                 span.end()

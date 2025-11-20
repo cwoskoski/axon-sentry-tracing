@@ -1,6 +1,7 @@
 package io.github.axonsentry.tracing
 
 import io.github.axonsentry.config.TracingConfiguration
+import io.github.axonsentry.spi.AttributeProvider
 import io.opentelemetry.api.common.AttributeKey
 import io.opentelemetry.api.trace.SpanBuilder
 import org.axonframework.commandhandling.CommandMessage
@@ -18,6 +19,7 @@ import org.axonframework.queryhandling.QueryMessage
  * The applier respects the [TracingConfiguration] settings for:
  * - **Payload capture**: Controls whether message payloads are serialized to spans (per message type)
  * - **Payload size limits**: Prevents spans from becoming too large with sanitization
+ * - **Custom attributes**: Applies custom attributes from [AttributeProvider] implementations
  *
  * ## Attribute Categories
  * 1. **Generic Message Attributes**: message.id, message.type, operation
@@ -25,13 +27,16 @@ import org.axonframework.queryhandling.QueryMessage
  * 3. **Event-Specific**: axon.event.type, axon.event.timestamp
  * 4. **Query-Specific**: axon.query.name, axon.query.response_type
  * 5. **Handler Attributes**: axon.handler.class, axon.handler.method
- * 6. **Optional**: message.payload (if configured per message type)
+ * 6. **Custom Attributes**: Provided by [AttributeProvider] implementations
+ * 7. **Optional**: message.payload (if configured per message type)
  *
  * @property configuration The tracing configuration controlling capture behavior
+ * @property attributeProvider Optional custom attribute provider for domain-specific attributes
  * @property maxPayloadLength Maximum length for payload capture (default: 1000 characters)
  */
 class AttributeApplier(
     private val configuration: TracingConfiguration,
+    private val attributeProvider: AttributeProvider? = null,
     private val maxPayloadLength: Int = 1000,
 ) {
     companion object {
@@ -163,6 +168,7 @@ class AttributeApplier(
      * - Message name (derived from payload type)
      * - Operation type (send, receive, process)
      * - Messaging system (always "axon")
+     * - Custom attributes from attribute providers (if configured)
      *
      * @param spanBuilder The span builder to enrich
      * @param message The Axon message
@@ -179,9 +185,41 @@ class AttributeApplier(
         spanBuilder.setAttribute(OPERATION_KEY, operation)
         spanBuilder.setAttribute(MESSAGING_SYSTEM_KEY, AXON_SYSTEM)
 
+        // Apply custom attributes from providers if configured
+        if (attributeProvider != null) {
+            applyCustomAttributes(spanBuilder, message)
+        }
+
         // Capture metadata if present (always capture metadata for now)
         if (message.metaData.isNotEmpty()) {
             applyMetadataAttribute(spanBuilder, message.metaData)
+        }
+    }
+
+    /**
+     * Applies custom attributes from the configured [AttributeProvider].
+     *
+     * This method invokes the attribute provider to extract domain-specific
+     * attributes and adds them to the span.
+     *
+     * @param spanBuilder The span builder to enrich
+     * @param message The Axon message
+     */
+    private fun applyCustomAttributes(
+        spanBuilder: SpanBuilder,
+        message: Message<*>,
+    ) {
+        val customAttributes = attributeProvider?.provideAttributes(message) ?: return
+
+        for ((key, value) in customAttributes) {
+            when (value) {
+                is String -> spanBuilder.setAttribute(AttributeKey.stringKey(key), value)
+                is Long -> spanBuilder.setAttribute(AttributeKey.longKey(key), value)
+                is Int -> spanBuilder.setAttribute(AttributeKey.longKey(key), value.toLong())
+                is Double -> spanBuilder.setAttribute(AttributeKey.doubleKey(key), value)
+                is Boolean -> spanBuilder.setAttribute(AttributeKey.booleanKey(key), value)
+                else -> spanBuilder.setAttribute(AttributeKey.stringKey(key), value.toString())
+            }
         }
     }
 

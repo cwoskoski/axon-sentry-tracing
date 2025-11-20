@@ -1,7 +1,7 @@
 # Implementation Status
 
 ## Current Status
-**Issue 009: Spring Boot Auto-Configuration** - COMPLETE
+**Issue 010: Trace Context Propagation** - IN PROGRESS
 
 ## Completed Issues
 - Issue 001: Project structure and Gradle setup

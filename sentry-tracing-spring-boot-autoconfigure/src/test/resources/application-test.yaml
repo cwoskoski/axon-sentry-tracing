@@ -1,0 +1,20 @@
+axon:
+  sentry:
+    tracing:
+      enabled: true
+      trace-commands: true
+      trace-events: true
+      trace-queries: true
+      trace-event-processors: true
+      trace-sagas: true
+      capture-command-payloads: false
+      capture-event-payloads: false
+      capture-query-payloads: false
+      sentry-dsn: https://test@sentry.io/123
+      environment: test
+      traces-sample-rate: 1.0
+      attach-stacktrace: true
+      release: test-version
+      tags:
+        test: true
+        environment: integration-test

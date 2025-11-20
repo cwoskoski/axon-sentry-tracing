@@ -1,0 +1,146 @@
+{
+  "groups": [
+    {
+      "name": "axon.sentry.tracing",
+      "type": "io.github.axonsentry.spring.AxonSentryTracingProperties",
+      "sourceType": "io.github.axonsentry.spring.AxonSentryTracingProperties",
+      "description": "Configuration properties for Axon-Sentry tracing integration."
+    }
+  ],
+  "properties": [
+    {
+      "name": "axon.sentry.tracing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable tracing entirely. When disabled, no tracing interceptors are registered.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.trace-commands",
+      "type": "java.lang.Boolean",
+      "description": "Enable command tracing. Creates spans for command dispatch and handling.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.trace-events",
+      "type": "java.lang.Boolean",
+      "description": "Enable event tracing. Creates spans for event publication and handling.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.trace-queries",
+      "type": "java.lang.Boolean",
+      "description": "Enable query tracing. Creates spans for query dispatch and handling.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.trace-event-processors",
+      "type": "java.lang.Boolean",
+      "description": "Enable event processor tracing. Enriches event spans with processor information.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.trace-sagas",
+      "type": "java.lang.Boolean",
+      "description": "Enable saga tracing. Creates spans for saga invocations.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.capture-command-payloads",
+      "type": "java.lang.Boolean",
+      "description": "Capture command payloads in spans. WARNING: Be cautious with sensitive data. Payloads may contain personally identifiable information (PII) or secrets.",
+      "defaultValue": false
+    },
+    {
+      "name": "axon.sentry.tracing.capture-event-payloads",
+      "type": "java.lang.Boolean",
+      "description": "Capture event payloads in spans. Consider data sensitivity before enabling.",
+      "defaultValue": false
+    },
+    {
+      "name": "axon.sentry.tracing.capture-query-payloads",
+      "type": "java.lang.Boolean",
+      "description": "Capture query payloads in spans. Consider data sensitivity before enabling.",
+      "defaultValue": false
+    },
+    {
+      "name": "axon.sentry.tracing.sentry-dsn",
+      "type": "java.lang.String",
+      "description": "Sentry Data Source Name (DSN). Can also be configured via SENTRY_DSN environment variable. Required when tracing is enabled.",
+      "defaultValue": null
+    },
+    {
+      "name": "axon.sentry.tracing.environment",
+      "type": "java.lang.String",
+      "description": "Deployment environment (e.g., development, staging, production). Used to categorize traces in Sentry.",
+      "defaultValue": "development"
+    },
+    {
+      "name": "axon.sentry.tracing.traces-sample-rate",
+      "type": "java.lang.Double",
+      "description": "Sample rate for traces (0.0 to 1.0). 1.0 = trace 100% of requests, 0.1 = trace 10% of requests, 0.0 = disable all tracing.",
+      "defaultValue": 1.0
+    },
+    {
+      "name": "axon.sentry.tracing.attach-stacktrace",
+      "type": "java.lang.Boolean",
+      "description": "Attach stack traces to Sentry events. Provides additional context for errors.",
+      "defaultValue": true
+    },
+    {
+      "name": "axon.sentry.tracing.release",
+      "type": "java.lang.String",
+      "description": "Release version to report to Sentry. Helps track which version of your application produced traces.",
+      "defaultValue": null
+    },
+    {
+      "name": "axon.sentry.tracing.tags",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "description": "Additional tags to add to all spans. Useful for categorizing traces by team, service, etc.",
+      "defaultValue": {}
+    }
+  ],
+  "hints": [
+    {
+      "name": "axon.sentry.tracing.environment",
+      "values": [
+        {
+          "value": "development",
+          "description": "Development environment"
+        },
+        {
+          "value": "staging",
+          "description": "Staging environment"
+        },
+        {
+          "value": "production",
+          "description": "Production environment"
+        },
+        {
+          "value": "test",
+          "description": "Test environment"
+        }
+      ]
+    },
+    {
+      "name": "axon.sentry.tracing.traces-sample-rate",
+      "values": [
+        {
+          "value": 0.0,
+          "description": "No tracing (0%)"
+        },
+        {
+          "value": 0.1,
+          "description": "Low sampling (10%)"
+        },
+        {
+          "value": 0.5,
+          "description": "Medium sampling (50%)"
+        },
+        {
+          "value": 1.0,
+          "description": "Full tracing (100%)"
+        }
+      ]
+    }
+  ]
+}

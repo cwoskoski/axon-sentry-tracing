@@ -26,8 +26,13 @@ dependencies {
     // Spring Boot Actuator (optional)
     compileOnly("org.springframework.boot:spring-boot-starter-actuator:${property("springBootVersion")}")
 
+    // Jakarta Validation for @DecimalMin/@DecimalMax
+    api("jakarta.validation:jakarta.validation-api:3.0.2")
+
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test:${property("springBootVersion")}")
+    testImplementation("org.springframework.boot:spring-boot-starter-actuator:${property("springBootVersion")}")
+    testImplementation("org.springframework.boot:spring-boot-starter-validation:${property("springBootVersion")}")
     testImplementation("org.axonframework:axon-test:${property("axonVersion")}")
 }
 

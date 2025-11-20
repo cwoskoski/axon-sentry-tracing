@@ -1,9 +1,12 @@
 package io.github.axonsentry.spring
 
+import io.github.axonsentry.config.SamplingConfiguration
 import io.github.axonsentry.config.TracingConfiguration
 import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
+import jakarta.validation.constraints.Positive
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.validation.annotation.Validated
 
 /**
@@ -146,6 +149,25 @@ class AxonSentryTracingProperties {
     var tags: Map<String, String> = emptyMap()
 
     /**
+     * Sampling configuration for controlling trace collection.
+     * Configure probability-based sampling and/or rate limiting.
+     *
+     * Example:
+     * ```yaml
+     * axon:
+     *   sentry:
+     *     tracing:
+     *       sampling:
+     *         enabled: true
+     *         probability: 0.1
+     *         traces-per-second: 100
+     *         combine-strategy: AND
+     * ```
+     */
+    @NestedConfigurationProperty
+    var sampling: SamplingProperties = SamplingProperties()
+
+    /**
      * Converts Spring Boot properties to TracingConfiguration domain model.
      *
      * This enables separation between Spring Boot configuration layer
@@ -168,6 +190,62 @@ class AxonSentryTracingProperties {
             environment = environment,
             tracesSampleRate = tracesSampleRate,
             attachStacktrace = attachStacktrace,
+            sampling = sampling.toSamplingConfiguration(),
         )
+    }
+
+    /**
+     * Nested configuration properties for sampling strategies.
+     */
+    @Validated
+    class SamplingProperties {
+        /**
+         * Enable sampling strategies (default: true).
+         */
+        var enabled: Boolean = true
+
+        /**
+         * Probability-based sampling rate (0.0 to 1.0).
+         * null = disabled, 1.0 = sample all traces, 0.1 = sample 10%
+         */
+        @DecimalMin("0.0")
+        @DecimalMax("1.0")
+        var probability: Double? = null
+
+        /**
+         * Rate limit in traces per second.
+         * null = no rate limiting
+         */
+        @Positive
+        var tracesPerSecond: Int? = null
+
+        /**
+         * How to combine multiple samplers: "AND" or "OR".
+         * AND = all samplers must accept (more restrictive)
+         * OR = any sampler accepting is sufficient (less restrictive)
+         */
+        var combineStrategy: String = "AND"
+
+        /**
+         * Converts to SamplingConfiguration domain model.
+         */
+        fun toSamplingConfiguration(): SamplingConfiguration {
+            val strategy =
+                when (combineStrategy.uppercase()) {
+                    "AND" -> SamplingConfiguration.CombineStrategy.AND
+                    "OR" -> SamplingConfiguration.CombineStrategy.OR
+                    else ->
+                        throw IllegalArgumentException(
+                            "Invalid combine strategy: $combineStrategy. Must be 'AND' or 'OR'",
+                        )
+                }
+
+            return SamplingConfiguration(
+                enabled = enabled,
+                probability = probability,
+                tracesPerSecond = tracesPerSecond,
+                combineStrategy = strategy,
+            )
+        }
     }
 }

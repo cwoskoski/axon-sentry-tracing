@@ -7,7 +7,6 @@ import io.opentelemetry.context.Context
 import io.opentelemetry.sdk.testing.junit5.OpenTelemetryExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.axonframework.commandhandling.GenericCommandMessage
-import org.axonframework.messaging.Message
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

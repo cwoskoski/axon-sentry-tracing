@@ -16,6 +16,7 @@ package io.github.axonsentry.config
  * @property environment Deployment environment (dev, staging, production)
  * @property tracesSampleRate Sample rate for traces (0.0 to 1.0)
  * @property attachStacktrace Include stacktraces in Sentry events
+ * @property sampling Sampling configuration for controlling trace collection
  * @property customAttributeProviders List of custom attribute providers for adding custom span attributes
  *
  * @since 1.0.0
@@ -34,6 +35,7 @@ data class TracingConfiguration(
     val environment: String = "development",
     val tracesSampleRate: Double = 1.0,
     val attachStacktrace: Boolean = true,
+    val sampling: SamplingConfiguration = SamplingConfiguration.default(),
     val customAttributeProviders: List<CustomAttributeProvider> = emptyList(),
 ) {
     init {
@@ -66,6 +68,7 @@ data class TracingConfiguration(
         var environment: String = config.environment
         var tracesSampleRate: Double = config.tracesSampleRate
         var attachStacktrace: Boolean = config.attachStacktrace
+        var sampling: SamplingConfiguration = config.sampling
         private val customAttributeProviders: MutableList<CustomAttributeProvider> =
             config.customAttributeProviders.toMutableList()
 
@@ -100,6 +103,7 @@ data class TracingConfiguration(
                 environment = environment,
                 tracesSampleRate = tracesSampleRate,
                 attachStacktrace = attachStacktrace,
+                sampling = sampling,
                 customAttributeProviders = customAttributeProviders.toList(),
             )
     }

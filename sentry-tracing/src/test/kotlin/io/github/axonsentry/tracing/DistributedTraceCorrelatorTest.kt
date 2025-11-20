@@ -1,6 +1,5 @@
 package io.github.axonsentry.tracing
 
-import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.Tracer
 import io.opentelemetry.context.Context
 import io.opentelemetry.sdk.testing.junit5.OpenTelemetryExtension

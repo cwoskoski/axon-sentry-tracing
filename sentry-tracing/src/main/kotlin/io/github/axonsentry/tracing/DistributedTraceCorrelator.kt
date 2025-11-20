@@ -1,7 +1,6 @@
 package io.github.axonsentry.tracing
 
 import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.SpanContext
 import io.opentelemetry.api.trace.TraceId
 import org.axonframework.messaging.Message
 import java.util.UUID
@@ -358,8 +357,7 @@ data class CorrelationContext(
      *
      * @return true if at least one ID is present, false otherwise
      */
-    fun hasCorrelation(): Boolean =
-        correlationId != null || transactionId != null || traceId != null
+    fun hasCorrelation(): Boolean = correlationId != null || transactionId != null || traceId != null
 
     /**
      * Converts this context to a metadata map for message enrichment.

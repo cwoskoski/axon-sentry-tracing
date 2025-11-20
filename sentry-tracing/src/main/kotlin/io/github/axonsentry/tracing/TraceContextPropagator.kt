@@ -231,8 +231,7 @@ class TraceContextPropagator(
  * @param propagator The TraceContextPropagator to use for injection
  * @return A new message with trace context injected into metadata
  */
-fun <T> Message<T>.withTraceContext(propagator: TraceContextPropagator): Message<T> =
-    propagator.inject(this)
+fun <T> Message<T>.withTraceContext(propagator: TraceContextPropagator): Message<T> = propagator.inject(this)
 
 /**
  * Extension function to inject trace context and baggage into an Axon message.

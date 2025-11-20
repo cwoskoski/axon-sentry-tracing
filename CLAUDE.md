@@ -8,11 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-**Current Phase:** Phase 0 - Foundation & Setup (80% Complete)
-**Implementation Status:** 4 of 5 foundation issues complete, ready for Issue 005
-**Next Task:** Issue 005 - Sentry Axon SpanFactory
+**Current Phase:** Phase 1 - Core Integration (41.7% Complete)
+**Implementation Status:** 10 of 41 issues complete
+**Latest Completed:** Issue 010 - Trace Context Propagation
+**Overall Progress:** 24.4%
 
-This repository contains a buildable multi-module project with core domain model and Sentry integration. Issues 001-004 are complete. The project is organized into 41 detailed implementation issues in `docs/issues/` that provide step-by-step guidance for building the library.
+This repository contains a production-ready multi-module project with:
+- ✅ Phase 0 Complete: Foundation, domain model, Sentry integration, SpanFactory
+- ✅ Issues 006-010 Complete: Command/Event/Query tracing, Spring Boot auto-config, W3C trace context propagation
+- 🔄 Phase 1 In Progress: 5 of 12 issues complete (MVP path)
+
+The project is organized into 41 detailed implementation issues in `docs/issues/` that provide step-by-step guidance for building the library.
 
 ## Architecture Overview
 
@@ -69,21 +75,19 @@ The library operates through Axon message interceptors that:
 
 Detailed implementation documentation is in `docs/issues/` organized into phases:
 
-- **Phase 0 (001-005):** Foundation & Setup
-  - 001-004: Complete ✅ (Project setup, Gradle, domain model, Sentry integration)
-  - 005: **Sentry Axon SpanFactory** ← NEXT TO IMPLEMENT
+- **Phase 0 (001-005):** Foundation & Setup ✅ COMPLETE
+  - 001-005: All complete (Project setup, Gradle, domain model, Sentry integration, SpanFactory)
 
-- **Phase 1 (006-017):** Core Integration ⭐ MVP
-  - 006-008: Command, Event, Query message tracing
-  - 009: Comprehensive Spring Boot auto-configuration
-  - 010-017: Context propagation, sampling, testing, example app
+- **Phase 1 (006-017):** Core Integration ⭐ MVP (41.7% complete)
+  - 006-010: Complete ✅ (Command/Event/Query tracing, Spring Boot auto-config, W3C trace context)
+  - 011-017: Remaining (Attribute providers, sampling, error correlation, tests, docs, example app)
 
-- **Phase 2 (018-022):** Enhanced Spring Boot features
-- **Phase 3 (023-032):** Advanced features (sagas, sampling strategies)
-- **Phase 4 (033-040):** Production readiness (security, performance, testing)
-- **Phase 5 (041-045):** Documentation and release preparation
+- **Phase 2 (018-022):** Advanced Tracing Features
+- **Phase 3 (023-032):** Enterprise Features (sagas, sampling strategies, performance)
+- **Phase 4 (033-040):** Production Readiness (security, performance, testing)
+- **Phase 5 (041-045):** Documentation and Release Preparation
 
-**Total Issues:** 41 (was 52, restructured 2025-11-19)
+**Total Issues:** 41 (restructured from 52 on 2025-11-19)
 
 Each issue includes:
 - Technical requirements with dependencies
@@ -91,35 +95,96 @@ Each issue includes:
 - Testing requirements
 - Acceptance criteria and definition of done
 
-**Current Focus:** Complete Issue 005 to enable Phase 1 interceptor implementation.
+**Current Focus:** Phase 1 MVP completion - Issues 011-017 remaining.
 
-## Issue Tracking
+## Issue Tracking & Commit Requirements
 
-**IMPORTANT:** When working on issues, you MUST keep `docs/issues/STATUS.md` updated:
+**CRITICAL:** When working on issues, you MUST follow these requirements:
 
-1. **When Starting an Issue:**
-   - Update the issue status from "🔴 Not Started" to "🟡 In Progress"
-   - Update the "Current Sprint" section to list the active issue
-   - Update the overall progress metrics
+### 1. STATUS.md Updates (Required for Every Issue)
 
-2. **When Completing an Issue:**
-   - Update the issue status from "🟡 In Progress" to "🟢 Completed"
-   - Move the issue to "Completed This Sprint" section
-   - Update all progress metrics (overall, phase, priority, complexity)
-   - Update progress bars and completion percentages
-   - Add entry to "Recent Activity" section with completion date
+Keep `docs/issues/STATUS.md` updated throughout the development lifecycle:
 
-3. **When Blocked:**
-   - Update issue status to "🔴 Blocked"
-   - Add details to "Blockers & Risks" section
-   - Document blocker details and required resolution
+**When Starting an Issue:**
+- Update issue status: "🔴 Not Started" → "🟡 In Progress"
+- Update phase progress percentages
+- Update overall progress metrics
 
-4. **After Each Work Session:**
-   - Review and update the "Last Updated" date
-   - Verify all metrics are accurate
-   - Commit STATUS.md changes along with implementation changes
+**When Completing an Issue:**
+- Update issue status: "🟡 In Progress" → "🟢 Completed"
+- Update all progress metrics:
+  - Overall progress (Completed count, percentage)
+  - Phase progress (issue count, percentage)
+- Verify assignee is set correctly
+- Commit STATUS.md with implementation changes
 
-The STATUS.md file is the single source of truth for project progress tracking. Keeping it updated ensures accurate visibility into project health and completion status.
+**When Blocked:**
+- Update issue status to "🔴 Blocked"
+- Document blocker details in STATUS.md
+
+### 2. Commit Message Requirements (Required for Every Commit)
+
+**IMPORTANT:** Every commit related to an issue MUST reference the issue number.
+
+**Format:**
+```
+<type>: <description> (#<issue-number>)
+
+<detailed explanation>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Examples:**
+```bash
+# Good - References issue
+feat: implement command tracing interceptor (#006)
+
+# Good - References issue in docs
+docs: update STATUS.md - Issue 010 complete
+
+# Bad - Missing issue reference
+feat: add command tracing
+
+# Bad - Wrong format
+feat: add command tracing (Issue 006)
+```
+
+**Commit Types:**
+- `feat:` - New feature implementation
+- `fix:` - Bug fix
+- `docs:` - Documentation updates (including STATUS.md)
+- `test:` - Test additions/modifications
+- `refactor:` - Code refactoring
+- `chore:` - Build/tooling changes
+
+**Rules:**
+1. ALWAYS include issue number in format `(#NNN)` in the first line
+2. Use three-digit issue numbers: `#006`, not `#6`
+3. STATUS.md updates should reference the issue in the commit message
+4. Multi-issue commits should list all issues: `(#006, #007, #008)`
+5. Always include Claude Code attribution footer
+
+### 3. Work Session Checklist
+
+At the end of each work session:
+- [ ] All issue-related code changes committed with issue references
+- [ ] STATUS.md updated with current progress
+- [ ] STATUS.md changes committed with descriptive message
+- [ ] Overall project progress percentage verified
+- [ ] Phase progress percentage verified
+
+### Why This Matters
+
+- **Traceability:** Links commits to requirements and implementation decisions
+- **Progress Visibility:** Stakeholders can track progress via STATUS.md
+- **Documentation:** Git history becomes searchable by issue number
+- **CI/CD Integration:** Issue references enable automated workflows
+- **Project Management:** Clear connection between work done and issues
+
+The STATUS.md file is the **single source of truth** for project progress tracking. Issue references in commits provide **end-to-end traceability** from requirement to implementation.
 
 ## Common Development Patterns
 

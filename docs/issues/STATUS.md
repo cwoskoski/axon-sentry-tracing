@@ -154,22 +154,29 @@
 
 ## 🔥 Current Sprint
 
-**Sprint:** Phase 0 - Foundation Completion
-**Sprint Goal:** Complete AxonSpanFactory to enable interceptor implementation
+**Sprint:** Phase 1 - Core Integration (MVP Path)
+**Sprint Goal:** Complete core tracing interceptors and configuration
 **Sprint Dates:** 2025-11-17 to Present
-**Sprint Progress:** 4/5 issues (80%)
+**Sprint Progress:** 6/12 issues (50%)
 
 ### Active Issues
-- 🎯 **Issue 005: Sentry Axon SpanFactory** (Critical/Large) - NEXT TO IMPLEMENT
-  - Centralizes span creation logic for all Axon message types
-  - Enables implementation of command, event, and query interceptors
-  - Critical dependency for Phase 1
+- 🎯 **Issue 012: Basic Sampling Strategy** (High/Medium) - NEXT TO IMPLEMENT
+  - Implement configurable sampling strategies
+  - Control span creation rates for production
+  - Critical for production deployments
 
 ### Completed This Sprint
 - ✅ Issue 001: Project Structure & Repository Setup (Critical/Small) - Completed 2025-11-17
 - ✅ Issue 002: Root Gradle Build Configuration (Critical/Medium) - Completed 2025-11-17
 - ✅ Issue 003: Core Domain Model (Critical/Medium) - Completed 2025-11-18
 - ✅ Issue 004: OpenTelemetry-Sentry Integration (Critical/Large) - Completed 2025-11-18
+- ✅ Issue 005: Sentry Axon SpanFactory (Critical/Large) - Completed 2025-11-18
+- ✅ Issue 006: Command Message Tracing (Critical/Large) - Completed 2025-11-19
+- ✅ Issue 007: Event Message Tracing (Critical/Large) - Completed 2025-11-19
+- ✅ Issue 008: Query Message Tracing (Critical/Large) - Completed 2025-11-19
+- ✅ Issue 009: Spring Boot Auto-Configuration (Critical/Large) - Completed 2025-11-19
+- ✅ Issue 010: Trace Context Propagation (Critical/Large) - Completed 2025-11-19
+- ✅ Issue 011: Span Attribute Providers (High/Medium) - Completed 2025-11-19
 
 ### Blocked Issues
 - None
@@ -179,23 +186,31 @@
 ## 🎯 Critical Path to MVP (4 weeks)
 
 ```
-001 Project Setup
+✅ 001 Project Setup
   ↓
-002 Root Build
+✅ 002 Root Build
   ↓
-003 Core Domain Model
+✅ 003 Core Domain Model
   ↓
-004 OpenTelemetry-Sentry Integration
+✅ 004 OpenTelemetry-Sentry Integration
   ↓
-005 Sentry Axon SpanFactory ⭐ KEY (NEXT)
+✅ 005 Sentry Axon SpanFactory ⭐ KEY
   ↓
-├─→ 006 Command Tracing ⭐ KEY
-├─→ 007 Event Tracing ⭐ KEY
-└─→ 008 Query Tracing ⭐ KEY
+✅ ├─→ 006 Command Tracing ⭐ KEY
+✅ ├─→ 007 Event Tracing ⭐ KEY
+✅ └─→ 008 Query Tracing ⭐ KEY
      ↓
-009 Spring Boot Auto-Configuration ⭐ KEY
+✅ 009 Spring Boot Auto-Configuration ⭐ KEY
   ↓
-010 Trace Context Propagation ⭐ KEY
+✅ 010 Trace Context Propagation ⭐ KEY
+  ↓
+✅ 011 Span Attribute Providers
+  ↓
+🎯 012 Basic Sampling Strategy (NEXT)
+  ↓
+013 Error Correlation
+  ↓
+014 Core Unit Tests
   ↓
 015 Integration Tests ⭐ KEY
   ↓
@@ -216,27 +231,27 @@
 
 ### Phase Completion
 ```
-Phase 0: [████████░░] 80% (4/5)
-Phase 1: [░░░░░░░░░░] 0% (0/12) ⭐ MVP
+Phase 0: [██████████] 100% (5/5) ✅ COMPLETE
+Phase 1: [█████░░░░░] 50% (6/12) ⭐ MVP - IN PROGRESS
 Phase 2: [░░░░░░░░░░] 0% (0/5)
 Phase 3: [░░░░░░░░░░] 0% (0/10)
 Phase 4: [░░░░░░░░░░] 0% (0/8)
-Phase 5: [░░░░░░░░░░] 0% (0/6)
+Phase 5: [░░░░░░░░░░] 0% (0/5)
 ```
 
 ### Priority Distribution
 ```
-Critical: [████░░░░░░] 33% (4/12 completed)
-High:     [░░░░░░░░░░] 0% (0/16 completed)
+Critical: [█████████░] 83% (10/12 completed)
+High:     [█░░░░░░░░░] 6% (1/16 completed)
 Medium:   [░░░░░░░░░░] 0% (0/11 completed)
 Low:      [░░░░░░░░░░] 0% (0/2 completed)
 ```
 
 ### Complexity Distribution
 ```
-Small:   [░░░░░░░░░░] 0% (0/1 completed)
-Medium:  [█████████░] 75% (3/4 completed)
-Large:   [█░░░░░░░░░] 8% (1/13 completed)
+Small:   [██████████] 100% (1/1 completed)
+Medium:  [██████████] 100% (4/4 completed)
+Large:   [████░░░░░░] 46% (6/13 completed)
 XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 ```
 
@@ -261,11 +276,18 @@ XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 ## 📝 Recent Activity
 
 ### Last 7 Days
+- **2025-11-19**: Completed Issue 011 - Span Attribute Providers (SPI, CompositeAttributeProvider, MetadataAttributeProvider, CorrelationIdAttributeProvider)
+- **2025-11-19**: Completed Issue 010 - Trace Context Propagation (W3C Trace Context via message metadata)
+- **2025-11-19**: Completed Issue 009 - Spring Boot Auto-Configuration (autoconfigure and starter modules)
+- **2025-11-19**: Completed Issue 008 - Query Message Tracing (query and subscription query interceptors)
+- **2025-11-19**: Completed Issue 007 - Event Message Tracing (event dispatch and handler interceptors)
+- **2025-11-19**: Completed Issue 006 - Command Message Tracing (command dispatch and handler interceptors)
 - **2025-11-19**: Restructured project from 52 issues to 41 issues with improved phase organization
+- **2025-11-18**: Completed Issue 005 - Sentry Axon SpanFactory (centralizes span creation)
+- **2025-11-18**: Completed Issue 004 - OpenTelemetry-Sentry Integration Core
+- **2025-11-18**: Completed Issue 003 - Core Domain Model
 - **2025-11-18**: Updated CLAUDE.md with issue tracking guidance
-- **2025-11-18**: Completed Issue 004 - OpenTelemetry-Sentry Integration Core (domain model, Sentry initializer)
-- **2025-11-18**: Completed Issue 003 - Core Domain Model (domain model implementation)
-- **2025-11-17**: Completed Issue 002 - Root Gradle Build Configuration (Issues 001-002)
+- **2025-11-17**: Completed Issue 002 - Root Gradle Build Configuration
 - **2025-11-17**: Completed Issue 001 - Project Structure & Repository Setup
 - **2025-11-17**: Project created, business analysis complete, technical documentation created
 
@@ -278,12 +300,12 @@ XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 
 | Milestone | Target Date | Status | Progress |
 |-----------|-------------|--------|----------|
-| **M0: Project Setup** | Week 1 | 🟡 In Progress | 4/5 (80%) |
-| **M1: MVP (Phase 1)** ⭐ | Week 4 | 🔴 Not Started | 0/12 |
+| **M0: Project Setup** | Week 1 | 🟢 Complete | 5/5 (100%) ✅ |
+| **M1: MVP (Phase 1)** ⭐ | Week 4 | 🟡 In Progress | 6/12 (50%) |
 | **M2: Spring Boot Integration** | Week 6 | 🔴 Not Started | 0/5 |
 | **M3: Advanced Features** | Week 9 | 🔴 Not Started | 0/10 |
 | **M4: Production Ready** | Week 11 | 🔴 Not Started | 0/8 |
-| **M5: v1.0.0 Release** | Week 12 | 🔴 Not Started | 0/6 |
+| **M5: v1.0.0 Release** | Week 12 | 🔴 Not Started | 0/5 |
 
 ---
 
@@ -360,11 +382,18 @@ XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 - [Claude Development Guide](../../CLAUDE.md) - Developer workflow
 
 ### Issue Details
-- [001-project-setup.md](./001-project-setup.md) - ⭐ START HERE
-- [002-gradle-configuration.md](./002-gradle-configuration.md)
-- [003-core-domain-model.md](./003-core-domain-model.md)
-- [004-opentelemetry-sentry-integration.md](./004-opentelemetry-sentry-integration.md)
-- [005-sentry-axon-spanfactory.md](./005-sentry-axon-spanfactory.md) - 🎯 NEXT
+- [001-project-setup.md](./001-project-setup.md) - ✅ Complete
+- [002-gradle-configuration.md](./002-gradle-configuration.md) - ✅ Complete
+- [003-core-domain-model.md](./003-core-domain-model.md) - ✅ Complete
+- [004-opentelemetry-sentry-integration.md](./004-opentelemetry-sentry-integration.md) - ✅ Complete
+- [005-sentry-axon-spanfactory.md](./005-sentry-axon-spanfactory.md) - ✅ Complete
+- [006-command-message-tracing.md](./006-command-message-tracing.md) - ✅ Complete
+- [007-event-message-tracing.md](./007-event-message-tracing.md) - ✅ Complete
+- [008-query-message-tracing.md](./008-query-message-tracing.md) - ✅ Complete
+- [009-spring-boot-autoconfiguration.md](./009-spring-boot-autoconfiguration.md) - ✅ Complete
+- [010-trace-context-propagation.md](./010-trace-context-propagation.md) - ✅ Complete
+- [011-span-attribute-providers.md](./011-span-attribute-providers.md) - ✅ Complete
+- [012-basic-sampling-strategy.md](./012-basic-sampling-strategy.md) - 🎯 NEXT
 
 ### External Resources
 - [Axon Framework Docs](https://docs.axoniq.io/)
@@ -450,7 +479,7 @@ XLarge:  [░░░░░░░░░░] 0% (0/2 completed)
 
 ---
 
-**Status Tracker Version:** 2.0
+**Status Tracker Version:** 2.1
 **Template Version:** 1.0
 **Last Updated By:** Claude Code
-**Next Update:** After completing Issue 005 (Sentry Axon SpanFactory)
+**Next Update:** After completing Issue 012 (Basic Sampling Strategy)
